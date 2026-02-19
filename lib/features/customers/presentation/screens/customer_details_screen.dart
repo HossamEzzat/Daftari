@@ -65,22 +65,8 @@ class _CustomerDetailsViewState extends State<CustomerDetailsView> {
       type: type,
     );
 
+    // Call TransactionRepository which now handles balance updates centrally
     await context.read<TransactionRepository>().addTransaction(transaction);
-
-    if (!mounted) return;
-
-    double newBalance = currentCustomer.balance;
-    // Customer Logic:
-    // Debt (Sale on credit) => They owe us more (+ve)
-    // Payment (They pay us) => They owe us less (-ve)
-    if (type == TransactionType.debt) {
-      newBalance += amount;
-    } else {
-      newBalance -= amount;
-    }
-
-    final updatedCustomer = currentCustomer.copyWith(balance: newBalance);
-    await context.read<CustomerRepository>().updateCustomer(updatedCustomer);
 
     if (mounted) {
       _refreshCustomer();
@@ -88,22 +74,12 @@ class _CustomerDetailsViewState extends State<CustomerDetailsView> {
   }
 
   void _deleteTransaction(Transaction transaction) async {
-    double newBalance = currentCustomer.balance;
-    // Revert logic
-    if (transaction.type == TransactionType.debt) {
-      newBalance -= transaction.amount;
-    } else {
-      newBalance += transaction.amount;
-    }
-
-    final updatedCustomer = currentCustomer.copyWith(balance: newBalance);
-    await context.read<CustomerRepository>().updateCustomer(updatedCustomer);
-    setState(() {
-      currentCustomer = updatedCustomer;
-    });
+    // Call TransactionCubit (which calls TransactionRepository)
+    // The repository now handles balance reversion centrally
+    await context.read<TransactionCubit>().deleteTransaction(transaction);
 
     if (mounted) {
-      await context.read<TransactionCubit>().deleteTransaction(transaction);
+      _refreshCustomer();
     }
   }
 

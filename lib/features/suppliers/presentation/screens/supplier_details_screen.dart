@@ -67,22 +67,8 @@ class _SupplierDetailsViewState extends State<SupplierDetailsView> {
       type: type,
     );
 
+    // Call TransactionRepository which now handles balance updates centrally
     await context.read<TransactionRepository>().addTransaction(transaction);
-
-    if (!mounted) return;
-
-    double newBalance = currentSupplier.balance;
-    // Supplier Logic:
-    // Debt (Purchase) => We owe more (+ve)
-    // Payment => We owe less (-ve)
-    if (type == TransactionType.debt) {
-      newBalance += amount;
-    } else {
-      newBalance -= amount;
-    }
-
-    final updatedSupplier = currentSupplier.copyWith(balance: newBalance);
-    await context.read<SupplierRepository>().updateSupplier(updatedSupplier);
 
     if (mounted) {
       _refreshSupplier();
@@ -90,21 +76,12 @@ class _SupplierDetailsViewState extends State<SupplierDetailsView> {
   }
 
   void _deleteTransaction(Transaction transaction) async {
-    double newBalance = currentSupplier.balance;
-    if (transaction.type == TransactionType.debt) {
-      newBalance -= transaction.amount;
-    } else {
-      newBalance += transaction.amount;
-    }
-
-    final updatedSupplier = currentSupplier.copyWith(balance: newBalance);
-    await context.read<SupplierRepository>().updateSupplier(updatedSupplier);
-    setState(() {
-      currentSupplier = updatedSupplier;
-    });
+    // Call TransactionCubit (which calls TransactionRepository)
+    // The repository now handles balance reversion centrally
+    await context.read<TransactionCubit>().deleteTransaction(transaction);
 
     if (mounted) {
-      await context.read<TransactionCubit>().deleteTransaction(transaction);
+      _refreshSupplier();
     }
   }
 

@@ -64,13 +64,20 @@ class MatjaryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Initialize DataSource that is shared
+    final txLocalDataSource = TransactionLocalDataSourceImpl(
+      transactionBox: transactionBox,
+    );
+
     return MultiRepositoryProvider(
       providers: [
+        // 2. Repositories that depend on txLocalDataSource
         RepositoryProvider<SupplierRepository>(
           create: (context) => SupplierRepositoryImpl(
             localDataSource: SupplierLocalDataSourceImpl(
               supplierBox: supplierBox,
             ),
+            transactionLocalDataSource: txLocalDataSource,
           ),
         ),
         RepositoryProvider<CustomerRepository>(
@@ -78,13 +85,15 @@ class MatjaryApp extends StatelessWidget {
             localDataSource: CustomerLocalDataSourceImpl(
               customerBox: customerBox,
             ),
+            transactionLocalDataSource: txLocalDataSource,
           ),
         ),
+        // 3. TransactionRepository depends on the other repositories
         RepositoryProvider<TransactionRepository>(
           create: (context) => TransactionRepositoryImpl(
-            localDataSource: TransactionLocalDataSourceImpl(
-              transactionBox: transactionBox,
-            ),
+            localDataSource: txLocalDataSource,
+            customerRepository: context.read<CustomerRepository>(),
+            supplierRepository: context.read<SupplierRepository>(),
           ),
         ),
       ],
@@ -106,7 +115,6 @@ class MatjaryApp extends StatelessWidget {
             primary: Color(0xFFD4AF37), // Gold
             secondary: Color(0xFF00897B), // Teal
             surface: Color(0xFF1E1E1E), // Dark Grey Card
-            // background: Color(0xFF121212), // Deprecated, using scaffoldBackgroundColor
             error: Color(0xFFCF6679),
           ),
           useMaterial3: true,
@@ -116,13 +124,13 @@ class MatjaryApp extends StatelessWidget {
             elevation: 0,
             centerTitle: true,
           ),
-          // cardTheme: CardTheme(
-          //   color: const Color(0xFF1E1E1E),
-          //   elevation: 4,
-          //   shape: RoundedRectangleBorder(
-          //     borderRadius: BorderRadius.circular(12),
-          //   ),
-          // ),
+          cardTheme: CardThemeData(
+            color: const Color(0xFF1E1E1E),
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
         home: const DashboardScreen(),
       ),

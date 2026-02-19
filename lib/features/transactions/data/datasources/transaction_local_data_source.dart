@@ -4,8 +4,10 @@ import '../models/transaction_model.dart';
 abstract class TransactionLocalDataSource {
   Future<List<TransactionModel>> getAllTransactions();
   Future<List<TransactionModel>> getTransactionsByParty(String partyId);
+  Future<TransactionModel?> getTransaction(String id);
   Future<void> addTransaction(TransactionModel transaction);
   Future<void> deleteTransaction(String id);
+  Future<void> deleteTransactionsByParty(String partyId);
 }
 
 class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
@@ -24,6 +26,11 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   }
 
   @override
+  Future<TransactionModel?> getTransaction(String id) async {
+    return transactionBox.get(id);
+  }
+
+  @override
   Future<void> addTransaction(TransactionModel transaction) async {
     await transactionBox.put(transaction.id, transaction);
   }
@@ -31,5 +38,14 @@ class TransactionLocalDataSourceImpl implements TransactionLocalDataSource {
   @override
   Future<void> deleteTransaction(String id) async {
     await transactionBox.delete(id);
+  }
+
+  @override
+  Future<void> deleteTransactionsByParty(String partyId) async {
+    final keysToDel = transactionBox.values
+        .where((tx) => tx.partyId == partyId)
+        .map((tx) => tx.id)
+        .toList();
+    await transactionBox.deleteAll(keysToDel);
   }
 }

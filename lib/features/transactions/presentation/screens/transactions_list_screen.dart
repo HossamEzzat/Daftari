@@ -66,7 +66,7 @@ class TransactionsListView extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      "${transaction.amount.toStringAsFixed(2)}",
+                      transaction.amount.toStringAsFixed(2),
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
