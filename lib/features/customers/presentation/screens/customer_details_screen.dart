@@ -92,111 +92,109 @@ class _CustomerDetailsViewState extends State<CustomerDetailsView> {
           // Header Card
           Container(
             width: double.infinity,
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(24),
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1E1E1E), Color(0xFF252525)],
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF1A1A1A),
+                  currentCustomer.balance > 0
+                      ? const Color(0xFF00BFA5).withValues(alpha: 0.1)
+                      : const Color(0xFFCF6679).withValues(alpha: 0.1),
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
+                  color: Colors.black.withValues(alpha: 0.5),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
                 ),
               ],
               border: Border.all(
-                color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+                color:
+                    (currentCustomer.balance > 0
+                            ? const Color(0xFF00BFA5)
+                            : const Color(0xFFCF6679))
+                        .withValues(alpha: 0.3),
+                width: 1.5,
               ),
             ),
             child: Column(
               children: [
-                const Text(
+                Text(
                   "الرصيد الحالي",
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[400],
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                FittedBox(
+                  child: Text(
+                    currentCustomer.balance.toStringAsFixed(2),
+                    style: TextStyle(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                      letterSpacing: -1,
+                      color: currentCustomer.balance > 0
+                          ? const Color(0xFF00BFA5)
+                          : const Color(0xFFCF6679),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  currentCustomer.balance.toStringAsFixed(2),
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Roboto',
-                    color: currentCustomer.balance > 0
-                        ? const Color(0xFF00897B) // Green for Asset (Lak)
-                        : const Color(0xFFCF6679),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        (currentCustomer.balance > 0
+                                ? const Color(0xFF00BFA5)
+                                : const Color(0xFFCF6679))
+                            .withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    currentCustomer.balance > 0 ? "لك (عند العميل)" : "خالص",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: currentCustomer.balance > 0
+                          ? const Color(0xFF00BFA5)
+                          : const Color(0xFFCF6679),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  currentCustomer.balance > 0
-                      ? "لك (عند العميل)"
-                      : "خالص", // Paid fully
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: currentCustomer.balance > 0
-                        ? const Color(0xFF00897B)
-                        : const Color(0xFFCF6679),
-                  ),
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.sell, color: Colors.black),
-                        label: const Text(
-                          "بيع (آجل)",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () => _showAddTransactionDialogOfType(
+                      child: _buildActionButton(
+                        context,
+                        "بيع (آجل)",
+                        Icons.sell_rounded,
+                        const Color(0xFFCF6679),
+                        () => _showAddTransactionDialogOfType(
                           TransactionType.debt,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                            0xFFCF6679,
-                          ), // Redish for debt increasing? Or maybe keep consistent? Let's use generic styles.
-                          // Actually, Selling is Good, but it increases debt.
-                          // Let's stick to: Debt Action = Red/Warning? Or maybe consistent with Supplier.
-                          // Supplier: Debt(Buy) -> Red. Payment(Pay) -> Green (Good).
-                          // Customer: Debt(Sell) -> Actually adding asset.
-                          // Let's keep the Buttons: Debt=Red, Payment=Green for consistency of "Debt vs Payment" types.
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(
-                          Icons.attach_money,
-                          color: Colors.black,
-                        ),
-                        label: const Text(
-                          "تحصيل", // Receive Payment
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () => _showAddTransactionDialogOfType(
+                      child: _buildActionButton(
+                        context,
+                        "تحصيل",
+                        Icons.account_balance_wallet_rounded,
+                        const Color(0xFF00BFA5),
+                        () => _showAddTransactionDialogOfType(
                           TransactionType.payment,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00897B),
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
                         ),
                       ),
                     ),
@@ -237,88 +235,119 @@ class _CustomerDetailsViewState extends State<CustomerDetailsView> {
                     );
                   }
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     itemCount: state.transactions.length,
                     itemBuilder: (context, index) {
                       final tx = state.transactions[index];
                       final isDebt = tx.type == TransactionType.debt;
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E1E1E),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border(
-                              right: BorderSide(
-                                color: isDebt
-                                    ? const Color(0xFFCF6679)
-                                    : const Color(0xFF00897B),
-                                width: 4,
-                              ),
+                        child: Dismissible(
+                          key: Key(tx.id),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
                             ),
                           ),
-                          child: ListTile(
-                            onLongPress: () {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  backgroundColor: const Color(0xFF1E1E1E),
-                                  title: const Text(
-                                    "حذف العملية",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  content: const Text(
-                                    "هل تريد حذف هذه العملية؟ سيتم تعديل الرصيد تلقائياً.",
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(ctx),
-                                      child: const Text(
-                                        "إلغاء",
-                                        style: TextStyle(color: Colors.grey),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        _deleteTransaction(tx);
-                                        Navigator.pop(ctx);
-                                      },
-                                      child: const Text(
-                                        "حذف",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ),
-                                  ],
+                          onDismissed: (_) => _deleteTransaction(tx),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1A1A1A),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
                                 ),
-                              );
-                            },
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 4,
-                            ),
-                            title: Text(
-                              isDebt ? "بيع بضاعة" : "تحصيل نقدية",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                              ],
+                              border: Border.all(
+                                color:
+                                    (isDebt
+                                            ? const Color(0xFFCF6679)
+                                            : const Color(0xFF00BFA5))
+                                        .withValues(alpha: 0.2),
+                                width: 1,
                               ),
                             ),
-                            subtitle: Text(
-                              tx.date.toString().split('.')[0],
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8,
                               ),
-                            ),
-                            trailing: Text(
-                              tx.amount.toStringAsFixed(2),
-                              style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: isDebt
-                                    ? const Color(0xFFCF6679)
-                                    : const Color(0xFF00897B),
+                              leading: Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color:
+                                      (isDebt
+                                              ? const Color(0xFFCF6679)
+                                              : const Color(0xFF00BFA5))
+                                          .withValues(alpha: 0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  isDebt
+                                      ? Icons.arrow_upward_rounded
+                                      : Icons.arrow_downward_rounded,
+                                  color: isDebt
+                                      ? const Color(0xFFCF6679)
+                                      : const Color(0xFF00BFA5),
+                                  size: 20,
+                                ),
+                              ),
+                              title: Text(
+                                isDebt ? "بيع بضاعة" : "تحصيل نقدية",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  tx.date.toString().split('.')[0],
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    tx.amount.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: isDebt
+                                          ? const Color(0xFFCF6679)
+                                          : const Color(0xFF00BFA5),
+                                    ),
+                                  ),
+                                  Text(
+                                    isDebt ? "دين +" : "دفع -",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isDebt
+                                          ? const Color(0xFFCF6679)
+                                          : const Color(0xFF00BFA5),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -342,6 +371,34 @@ class _CustomerDetailsViewState extends State<CustomerDetailsView> {
       builder: (ctx) => AddTransactionDialog(
         initialType: type,
         onSubmit: (t, amount) => _addTransaction(t, amount),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onPressed,
+  ) {
+    return ElevatedButton.icon(
+      icon: Icon(icon, color: Colors.black, size: 20),
+      label: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+      ),
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 8,
+        shadowColor: color.withValues(alpha: 0.4),
       ),
     );
   }

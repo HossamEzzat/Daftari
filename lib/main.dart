@@ -109,26 +109,52 @@ class MatjaryApp extends StatelessWidget {
         ],
         theme: ThemeData(
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color(0xFF121212),
-          primaryColor: const Color(0xFFD4AF37), // Gold
+          scaffoldBackgroundColor: const Color(0xFF0F0F0F), // Deeper Dark
+          primaryColor: const Color(0xFFFFD700), // Vibrant Gold
           colorScheme: const ColorScheme.dark(
-            primary: Color(0xFFD4AF37), // Gold
-            secondary: Color(0xFF00897B), // Teal
-            surface: Color(0xFF1E1E1E), // Dark Grey Card
+            primary: Color(0xFFFFD700), // Vibrant Gold
+            secondary: Color(0xFF00BFA5), // Brighter Teal
+            surface: Color(0xFF1A1A1A), // Darker Grey Card
             error: Color(0xFFCF6679),
           ),
           useMaterial3: true,
           textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF1E1E1E),
+            backgroundColor: Color(0xFF1A1A1A),
             elevation: 0,
             centerTitle: true,
+            titleTextStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Cairo', // Ensure Cairo for titles
+            ),
           ),
           cardTheme: CardThemeData(
-            color: const Color(0xFF1E1E1E),
-            elevation: 4,
+            color: const Color(0xFF1A1A1A),
+            elevation: 8,
+            shadowColor: Colors.black.withValues(alpha: 0.5),
             shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: const Color(0xFF262626),
+            border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Color(0xFFFFD700),
+                width: 1.5,
+              ),
+            ),
+            labelStyle: const TextStyle(color: Colors.grey),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
             ),
           ),
         ),

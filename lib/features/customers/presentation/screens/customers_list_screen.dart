@@ -69,118 +69,152 @@ class CustomersListView extends StatelessWidget {
                 final customer = state.customers[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    tileColor: const Color(0xFF1E1E1E),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(
-                        0xFFD4AF37,
-                      ).withValues(alpha: 0.2),
-                      child: Text(
-                        customer.name[0].toUpperCase(),
-                        style: const TextStyle(
-                          color: Color(0xFFD4AF37),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      customer.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      customer.phone,
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              customer.balance.abs().toStringAsFixed(2),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: customer.balance > 0
-                                    ? const Color(0xFF00897B)
-                                    : const Color(0xFFCF6679),
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                            Text(
-                              customer.balance > 0 ? "لك" : "عليك",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: customer.balance > 0
-                                    ? const Color(0xFF00897B)
-                                    : const Color(0xFFCF6679),
-                              ),
-                            ),
-                          ],
-                        ),
-                        PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, color: Colors.grey),
-                          onSelected: (value) {
-                            if (value == 'edit') {
-                              _showEditCustomerDialog(context, customer);
-                            } else if (value == 'delete') {
-                              _confirmDeleteCustomer(context, customer);
-                            }
-                          },
-                          itemBuilder: (context) => [
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit, size: 18),
-                                  SizedBox(width: 8),
-                                  Text("تعديل"),
-                                ],
-                              ),
-                            ),
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    "حذف",
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A1A1A),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
+                      border: Border.all(
+                        color: const Color(0xFFD4AF37).withValues(alpha: 0.1),
+                        width: 1,
+                      ),
                     ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              CustomerDetailsScreen(customer: customer),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
                         ),
-                      ).then((_) {
-                        if (context.mounted) {
-                          context.read<CustomersCubit>().loadCustomers();
-                        }
-                      });
-                    },
+                        child: Center(
+                          child: Text(
+                            customer.name[0].toUpperCase(),
+                            style: const TextStyle(
+                              color: Color(0xFFFFD700),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        customer.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          customer.phone,
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                customer.balance.abs().toStringAsFixed(2),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: customer.balance > 0
+                                      ? const Color(0xFF00BFA5)
+                                      : const Color(0xFFCF6679),
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                              Text(
+                                customer.balance > 0 ? "لك" : "عليك",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: customer.balance > 0
+                                      ? const Color(0xFF00BFA5)
+                                      : const Color(0xFFCF6679),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 8),
+                          PopupMenuButton<String>(
+                            icon: const Icon(
+                              Icons.more_vert,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                            onSelected: (value) {
+                              if (value == 'edit') {
+                                _showEditCustomerDialog(context, customer);
+                              } else if (value == 'delete') {
+                                _confirmDeleteCustomer(context, customer);
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'edit',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit_outlined, size: 18),
+                                    SizedBox(width: 12),
+                                    Text("تعديل"),
+                                  ],
+                                ),
+                              ),
+                              const PopupMenuItem(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.red,
+                                      size: 18,
+                                    ),
+                                    SizedBox(width: 12),
+                                    Text(
+                                      "حذف",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                CustomerDetailsScreen(customer: customer),
+                          ),
+                        ).then((_) {
+                          if (context.mounted) {
+                            context.read<CustomersCubit>().loadCustomers();
+                          }
+                        });
+                      },
+                    ),
                   ),
                 );
               },
