@@ -435,71 +435,127 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF1E1E1E),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text("إضافة عملية", style: TextStyle(color: Colors.white)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
+      backgroundColor: const Color(0xFF1A1A1A),
+      elevation: 24,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.1), width: 1),
+      ),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      title: Row(
         children: [
-          DropdownButtonFormField<TransactionType>(
-            // key: ValueKey(_type), // Ensure rebuild if needed (though local state update might handle it if we just use initialValue? No, usually initialValue is one-off)
-            // Actually, if we use initialValue, we should rely on FormField state.
-            // But I will stick to Key to be safe.
-            key: ValueKey(_type),
-            initialValue: _type,
-            dropdownColor: const Color(0xFF2C2C2C),
-            items: const [
-              DropdownMenuItem(
-                value: TransactionType.debt,
-                child: Text(
-                  "شراء (دين)",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              DropdownMenuItem(
-                value: TransactionType.payment,
-                child: Text("دفع", style: TextStyle(color: Colors.white)),
-              ),
-            ],
-            onChanged: widget.initialType != null
-                ? null
-                : (val) => setState(() => _type = val!),
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              enabled: widget.initialType == null,
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              Icons.add_chart_rounded,
+              color: Color(0xFFFFD700),
+              size: 20,
             ),
           ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              labelText: "المبلغ",
-              labelStyle: const TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Color(0xFFD4AF37)),
-                borderRadius: BorderRadius.circular(12),
-              ),
+          const SizedBox(width: 16),
+          const Text(
+            "إضافة عملية",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
       ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            const Text(
+              "نوع العملية",
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<TransactionType>(
+              initialValue: _type,
+              dropdownColor: const Color(0xFF1A1A1A),
+              items: const [
+                DropdownMenuItem(
+                  value: TransactionType.debt,
+                  child: Text(
+                    "شراء (دين)",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: TransactionType.payment,
+                  child: Text("دفع", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+              onChanged: widget.initialType != null
+                  ? null
+                  : (val) => setState(() => _type = val!),
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                enabled: widget.initialType == null,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "المبلغ",
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _amountController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              style: const TextStyle(
+                color: Colors.white,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: "0.00",
+                prefixText: r"$ ",
+                prefixStyle: const TextStyle(
+                  color: Color(0xFFFFD700),
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("إلغاء", style: TextStyle(color: Colors.grey)),
+          child: const Text(
+            "إلغاء",
+            style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+          ),
         ),
+        const SizedBox(width: 8),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFD4AF37),
+            backgroundColor: const Color(0xFFFFD700),
             foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 8,
+            shadowColor: const Color(0xFFFFD700).withValues(alpha: 0.3),
           ),
           onPressed: () {
             final amount = double.tryParse(_amountController.text);
@@ -509,7 +565,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
             }
           },
           child: const Text(
-            "حفظ",
+            "حفظ العملية",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

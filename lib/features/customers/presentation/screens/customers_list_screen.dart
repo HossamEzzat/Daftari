@@ -232,20 +232,53 @@ class CustomersListView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
-        title: const Text(
-          "تعديل العميل",
-          style: TextStyle(color: Colors.white),
+        backgroundColor: const Color(0xFF1A1A1A),
+        elevation: 24,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(
+                Icons.edit_outlined,
+                color: Color(0xFFFFD700),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Text(
+              "تعديل العميل",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 16),
             TextField(
               controller: nameController,
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: "اسم العميل",
-                prefixIcon: Icon(Icons.person, color: Color(0xFFD4AF37)),
+                prefixIcon: Icon(
+                  Icons.person_outline,
+                  color: Color(0xFFFFD700),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -254,20 +287,32 @@ class CustomersListView extends StatelessWidget {
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
                 labelText: "رقم الهاتف",
-                prefixIcon: Icon(Icons.phone, color: Color(0xFFD4AF37)),
+                prefixIcon: Icon(
+                  Icons.phone_outlined,
+                  color: Color(0xFFFFD700),
+                ),
               ),
             ),
           ],
         ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("إلغاء", style: TextStyle(color: Colors.grey)),
+            child: const Text(
+              "إلغاء",
+              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+            ),
           ),
+          const SizedBox(width: 8),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFD4AF37),
+              backgroundColor: const Color(0xFFFFD700),
               foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 4,
             ),
             onPressed: () {
               final updated = customer.copyWith(
@@ -277,7 +322,10 @@ class CustomersListView extends StatelessWidget {
               context.read<CustomersCubit>().updateCustomer(updated);
               Navigator.pop(ctx);
             },
-            child: const Text("حفظ"),
+            child: const Text(
+              "حفظ التعديلات",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
@@ -288,23 +336,46 @@ class CustomersListView extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
-        title: const Text("تأكيد الحذف", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+          side: BorderSide(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
+        ),
+        title: const Text(
+          "تأكيد الحذف",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         content: Text(
           "هل أنت متأكد من حذف ${customer.name}؟ سيتم حذف جميع العمليات المرتبطة.",
           style: const TextStyle(color: Colors.white70),
         ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: const Text("إلغاء", style: TextStyle(color: Colors.grey)),
           ),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFCF6679).withValues(alpha: 0.1),
+              foregroundColor: const Color(0xFFCF6679),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: const BorderSide(color: Color(0xFFCF6679), width: 1),
+              ),
+            ),
             onPressed: () {
               context.read<CustomersCubit>().deleteCustomer(customer.id);
               Navigator.pop(ctx);
             },
-            child: const Text("حذف", style: TextStyle(color: Colors.red)),
+            child: const Text(
+              "حذف الآن",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

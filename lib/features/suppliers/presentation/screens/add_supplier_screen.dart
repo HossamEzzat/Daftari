@@ -21,24 +21,49 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('إضافة مورد جديد')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(_nameController, "اسم المورد", Icons.person),
-              const SizedBox(height: 16),
-              _buildTextField(_phoneController, "رقم الهاتف", Icons.phone),
+              const Text(
+                "بيانات المورد",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "أدخل تفاصيل المورد الجديد بالأسفل",
+                style: TextStyle(color: Colors.grey[500], fontSize: 14),
+              ),
               const SizedBox(height: 32),
+              _buildTextField(
+                _nameController,
+                "اسم المورد",
+                Icons.person_outline,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _phoneController,
+                "رقم الهاتف",
+                Icons.phone_outlined,
+              ),
+              const SizedBox(height: 48),
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4AF37),
+                    backgroundColor: const Color(0xFFFFD700),
                     foregroundColor: Colors.black,
+                    elevation: 8,
+                    shadowColor: const Color(0xFFFFD700).withValues(alpha: 0.3),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   onPressed: () {
@@ -54,7 +79,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     }
                   },
                   child: const Text(
-                    'حفظ',
+                    'حفظ المورد',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),

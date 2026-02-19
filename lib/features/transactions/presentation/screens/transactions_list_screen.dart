@@ -44,46 +44,96 @@ class TransactionsListView extends StatelessWidget {
               );
             }
             return ListView.builder(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: state.transactions.length,
               itemBuilder: (context, index) {
                 final transaction = state.transactions[index];
                 final isPayment = transaction.type == TransactionType.payment;
-                return Card(
-                  color: const Color(0xFF1E1E1E),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: isPayment
-                          ? Colors.green.withValues(alpha: 0.2)
-                          : Colors.red.withValues(alpha: 0.2),
-                      child: Icon(
-                        isPayment ? Icons.arrow_downward : Icons.arrow_upward,
-                        color: isPayment ? Colors.green : Colors.red,
+                final isSupplier = transaction.partyType == PartyType.supplier;
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A1A1A),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(
+                        color:
+                            (isPayment
+                                    ? const Color(0xFF00BFA5)
+                                    : const Color(0xFFCF6679))
+                                .withValues(alpha: 0.1),
+                        width: 1,
                       ),
                     ),
-                    title: Text(
-                      transaction.amount.toStringAsFixed(2),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                    ),
-                    subtitle: Text(
-                      transaction.date.toString().substring(
-                        0,
-                        10,
-                      ), // Simple date format YYYY-MM-DD
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                    trailing: Text(
-                      transaction.partyType == PartyType.supplier
-                          ? "مورد"
-                          : "عميل",
-                      style: const TextStyle(color: Color(0xFFD4AF37)),
+                      leading: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color:
+                              (isPayment
+                                      ? const Color(0xFF00BFA5)
+                                      : const Color(0xFFCF6679))
+                                  .withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isPayment
+                              ? Icons.arrow_downward_rounded
+                              : Icons.arrow_upward_rounded,
+                          color: isPayment
+                              ? const Color(0xFF00BFA5)
+                              : const Color(0xFFCF6679),
+                          size: 20,
+                        ),
+                      ),
+                      title: Text(
+                        transaction.amount.toStringAsFixed(2),
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          transaction.date.toString().substring(0, 10),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[500],
+                          ),
+                        ),
+                      ),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFD700).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          isSupplier ? "مورد" : "عميل",
+                          style: const TextStyle(
+                            color: Color(0xFFFFD700),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 );
